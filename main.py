@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import random
-import os
 
 # -------------------------------
 # 1. MBTI와 밈 이미지 매핑 설정
@@ -18,10 +17,8 @@ meme_data = {
     "INTJ": [("memes/intj_1.jpg", "계획 없는 삶은 INTJ에게 재앙 😅")],
     "ENFP": [("memes/enfp_1.jpg", "또 새로운 프로젝트를 시작해버린 ENFP")],
     "INFP": [("memes/infp_1.jpg", "머릿속은 판타지 소설 중 🧚‍♀️")],
-    # 다른 MBTI는 default로 처리
 }
 
-# 기본 밈 리스트
 default_memes = [
     ("memes/default_1.jpg", "오늘도 열심히 살아보자!"),
     ("memes/default_2.jpg", "당신은 특별해요 ✨"),
@@ -45,9 +42,13 @@ else:
 
 image_path, description = meme
 
-# 이미지와 설명 보여주기
-if os.path.exists(image_path):
-    st.image(image_path, use_container_width=True)
+# -------------------------------
+# 3. 이미지 불러오기 - PIL + st.image
+# -------------------------------
+try:
+    image = Image.open(image_path)
+    st.image(image, use_container_width=True)
     st.markdown(f"**💬 {description}**")
-else:
-    st.error("❗ 이미지 파일을 찾을 수 없습니다. memes 폴더를 확인해주세요.")
+except Exception as e:
+    st.error("❗ 이미지 파일을 열 수 없습니다. 경로 또는 파일 자체를 확인해주세요.")
+    st.exception(e)
